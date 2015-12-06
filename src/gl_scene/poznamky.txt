@@ -1,0 +1,1 @@
+keyframeova animacia je linearna interpolacia v cas
