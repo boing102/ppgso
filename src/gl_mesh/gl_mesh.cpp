@@ -22,11 +22,12 @@ const unsigned int SIZE = 512;
 bool animationEnabled = true;
 double mousePosX = 0.0;
 double mousePosY = 0.0;
+float rotation = 0.0f;
 
 // Keyboard press event handler
 void OnKeyPress(GLFWwindow* /* window */, int key, int /* scancode */, int action, int /* mods */) {
   if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-    animationEnabled = !animationEnabled;
+    rotation += 90.0f;
   }
 }
 
@@ -86,7 +87,7 @@ int main() {
   // Load mesh data
   auto sphere = Mesh{
           program,      // Associate Position and TexCoord inputs with this program)
-          "sphere.obj", // OBJ file to load data from
+          "block1.obj", // OBJ file to load data from
   };
   auto cursor = Mesh{program, "quad.obj"};
 
@@ -111,7 +112,7 @@ int main() {
     if (animationEnabled) time = (float) glfwGetTime();
 
     // Create object matrices
-    auto centerSphereMat = glm::rotate(glm::mat4(1.0f), time, glm::vec3(0.5f, 1.0f, 0.0f));
+    auto centerSphereMat = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 1.0f, 0.0f));
     auto smallSphereMat = glm::translate(glm::mat4(1.0f), glm::vec3(sin(time), cos(time), 0));
     smallSphereMat = glm::scale(smallSphereMat, glm::vec3(0.5f, 0.5f, 0.5f));
 

@@ -17,10 +17,11 @@
 #include "scene.h"
 #include "camera.h"
 #include "generator.h"
+#include "generator_block.h"
 #include "player.h"
 #include "space.h"
 
-const unsigned int SIZE = 512;
+const unsigned int SIZE = 1024;
 
 Scene scene;
 
@@ -38,14 +39,14 @@ void InitializeScene() {
   scene.objects.push_back(space);
 
   // Add generator to scene
-  auto generator = GeneratorPtr(new Generator{});
-  generator->position.y = 10.0f;
-  scene.objects.push_back(generator);
+  auto generator_block = GeneratorBlockPtr(new Generator_Block{});
+  generator_block->position.y = 10.0f;
+  scene.objects.push_back(generator_block);
 
   // Add player to the scene
-  auto player = PlayerPtr(new Player{});
-  player->position.y = -6;
-  scene.objects.push_back(player);
+//  auto player = PlayerPtr(new Player{});
+//  player->position.y = -6;
+//  scene.objects.push_back(player);
 }
 
 // Keyboard press event handler
@@ -62,6 +63,10 @@ void OnKeyPress(GLFWwindow* /* window */, int key, int /* scancode */, int actio
 void OnMouseMove(GLFWwindow* /* window */, double xpos, double ypos) {
   scene.mouse.x = xpos;
   scene.mouse.y = ypos;
+}
+
+void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
+  scene.camera->position.z += (float) yoffset;
 }
 
 int main() {
@@ -101,6 +106,7 @@ int main() {
   // Add keyboard and mouse handlers
   glfwSetKeyCallback(window, OnKeyPress);
   glfwSetCursorPosCallback(window, OnMouseMove);
+  glfwSetScrollCallback(window, OnScroll);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // Hide mouse cursor
   glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 

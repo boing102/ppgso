@@ -153,6 +153,9 @@ set(GL_SCENE_SRC
         src/gl_scene/asteroid.cpp
         src/gl_scene/generator.cpp
         src/gl_scene/player.cpp
+        src/gl_scene/world.cpp
+        src/gl_scene/block.cpp
+        src/gl_scene/generator_block.cpp
         src/gl_scene/projectile.cpp
         src/gl_scene/explosion.cpp
         src/gl_scene/space.cpp)
