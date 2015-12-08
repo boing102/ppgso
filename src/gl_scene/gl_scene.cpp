@@ -20,6 +20,7 @@
 #include "generator_block.h"
 #include "player.h"
 #include "space.h"
+#include "asteroid.h"
 
 const unsigned int SIZE = 1024;
 
@@ -38,15 +39,27 @@ void InitializeScene() {
   auto space = SpacePtr(new Space{});
   scene.objects.push_back(space);
 
-  // Add generator to scene
-  auto generator_block = GeneratorBlockPtr(new Generator_Block{});
-  generator_block->position.y = 10.0f;
-  scene.objects.push_back(generator_block);
+  // Add generators to scene
+  float xoffset=-3.0f;
+  for(int i = 0; i < 3; i++ ) {
+    auto generator_block = GeneratorBlockPtr(new Generator_Block{});
+    generator_block->position.y = 2.5f;
+    generator_block->position.x = xoffset;
+    scene.objects.push_back(generator_block);
+    xoffset+=3.0f;
+  }
 
   // Add player to the scene
-//  auto player = PlayerPtr(new Player{});
-//  player->position.y = -6;
-//  scene.objects.push_back(player);
+  auto player = PlayerPtr(new Player{});
+  player->position.y = -6;
+  scene.objects.push_back(player);
+
+  // Add ball
+  auto ball = BlockPtr(new Block{});
+  ball->position = player->position;
+  ball->position.y += 5.0f;
+//  ball->scale *= 5.0f;
+  scene.objects.push_back(ball);
 }
 
 // Keyboard press event handler

@@ -1,5 +1,5 @@
-#ifndef PPGSO_BLOCK_H
-#define PPGSO_BLOCK_H
+#ifndef PPGSO_BRICK_H
+#define PPGSO_BRICK_H
 
 #include <memory>
 
@@ -13,31 +13,32 @@
 // This sphere object represents an instance of mesh geometry
 // It initializes and loads all resources only once
 // It will move down along the Y axis and self delete when reaching below -10
-class Block : public Object {
+class Brick : public Object {
 public:
-  Block();
-  ~Block();
+  Brick();
+  ~Brick();
 
   // Implement object interface
   bool Update(Scene &scene, float dt) override;
   void Render(Scene &scene) override;
 
-  float left();
-  float right();
-  float top();
-  float bottom();
 
-    // Speed momentum
-    glm::vec3 speed;
+  // Speed momentum
+  glm::vec3 speed;
+  int lives;
+
 private:
-  // Rotation momentum
-  glm::vec3 rotMomentum;
-
+  bool animateTop;
+  bool animateBot;
+  glm::vec3 animTop;
+  glm::vec3 animBot;
   // Static resources (Shared between instances)
   static MeshPtr mesh;
   static ShaderPtr shader;
-  static TexturePtr texture;
-};
-typedef std::shared_ptr<Block> BlockPtr;
+  float t;
 
-#endif //PPGSO_BLOCK_H
+  TexturePtr texture;
+};
+typedef std::shared_ptr<Brick> BrickPtr;
+
+#endif //PPGSO_BRICK_H

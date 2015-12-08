@@ -10,6 +10,9 @@ out vec2 FragTexCoord;
 // Normal to pass to the fragment shader
 out vec4 normal;
 
+// Position to be passed to fragment shader
+out vec3 position;
+
 // Matrices as program attributes
 uniform mat4 ProjectionMatrix;
 uniform mat4 ViewMatrix;
@@ -21,6 +24,8 @@ void main() {
 
   // Normal in world coordinates
   normal = normalize(ModelMatrix * vec4(Normal, 0.0f));
+
+  position = vec3(ModelMatrix * vec4(Position, 1.0f));
 
   // Calculate the final position on screen
   gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(Position, 1.0);

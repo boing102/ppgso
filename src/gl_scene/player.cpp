@@ -6,32 +6,25 @@
 
 #include "object_frag.h"
 #include "object_vert.h"
+#include "block.h"
 
 #include <GLFW/glfw3.h>
 
 Player::Player() {
-  // Reset fire delay
-  fireDelay = 0;
-  // Set the rate of fire
-  fireRate = 0.3f;
-  // Fire offset;
-  fireOffset = glm::vec3(0.7f,0.0f,0.0f);
-
-  // Scale the default model
-  scale *= 3.0f;
+  // Rotate and scale model
+  rotation = glm::vec3(PI, 0.0f, 0.0f);
+  scale *= 1.5f;
 
   // Initialize static resources if needed
   if (!shader) shader = ShaderPtr(new Shader{object_vert, object_frag});
-  if (!texture) texture = TexturePtr(new Texture{"corsair.rgb", 256, 512});
-  if (!mesh) mesh = MeshPtr(new Mesh{shader, "corsair.obj"});
+  if (!texture) texture = TexturePtr(new Texture{"asteroid.rgb", 512, 512});
+  if (!mesh) mesh = MeshPtr(new Mesh{shader, "brick.obj"});
 }
 
 Player::~Player() {
 }
 
 bool Player::Update(Scene &scene, float dt) {
-  // Fire delay increment
-  fireDelay += dt;
 
   // Hit detection
   for ( auto obj : scene.objects ) {
@@ -39,43 +32,32 @@ bool Player::Update(Scene &scene, float dt) {
     if (obj.get() == this)
       continue;
 
-    // We only need to collide with asteroids, ignore other objects
-    auto asteroid = std::dynamic_pointer_cast<Asteroid>(obj);
-    if (!asteroid) continue;
+    // We only need to collide with ball
+    auto ball = std::dynamic_pointer_cast<Block>(obj);
+    if (!ball) continue;
 
-    if (glm::distance(position, asteroid->position) < asteroid->scale.y) {
-      // Explode
-      auto explosion = ExplosionPtr(new Explosion{});
-      explosion->position = position;
-      explosion->scale = scale * 3.0f;
-      scene.objects.push_back(explosion);
+    if ((glm::distance(position.y, ball->position.y) < 0.886f ) &&
+        ((glm::distance(position.x, ball->position.x) < 1.391f ))) {
 
-      // Die
-      return false;
+      // Change ball's speed
+      ball->speed.y *=-1.0f;
+
+      if(ball->position.x < position.x) {
+        ball->speed.x *=-1.0f;
+      }
+      else {
+       ball->speed.x *=1.0f;
+      }
     }
   }
 
   // Keyboard controls
   if(scene.keyboard[GLFW_KEY_LEFT]) {
     position.x += 10 * dt;
-    rotation.z = -PI/4.0f;
   } else if(scene.keyboard[GLFW_KEY_RIGHT]) {
     position.x -= 10 * dt;
-    rotation.z = PI/4.0f;
   } else {
     rotation.z = 0;
-  }
-
-  // Firing projectiles
-  if(scene.keyboard[GLFW_KEY_SPACE] && fireDelay > fireRate) {
-    // Reset fire delay
-    fireDelay = 0;
-    // Invert file offset
-    fireOffset = -fireOffset;
-
-    auto projectile = ProjectilePtr(new Projectile{});
-    projectile->position = position + glm::vec3(0.0f, 0.0f, 0.3f) + fireOffset;
-    scene.objects.push_back(projectile);
   }
 
   GenerateModelMatrix();
@@ -93,6 +75,19 @@ void Player::Render(Scene &scene) {
   shader->SetMatrix(modelMatrix, "ModelMatrix");
   shader->SetTexture(texture, "Texture");
   mesh->Render();
+}
+
+float Player::left() {
+  return position.x + 1.835f;
+}
+float Player::right() {
+  return position.x - 1.835f;
+}
+float Player::top() {
+  return position.y - 0.453f;
+}
+float Player::bottom() {
+  return position.y + 0.453f;
 }
 
 // shared resources

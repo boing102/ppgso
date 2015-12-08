@@ -18,7 +18,7 @@ public:
   void Render(Scene &scene) override;
 
   float time;
-  BlockPtr previouslySpawned;
+  int spawnedBricks;
 };
 typedef std::shared_ptr< Generator_Block > GeneratorBlockPtr;
 

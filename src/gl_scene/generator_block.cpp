@@ -1,20 +1,19 @@
 #include "generator_block.h"
 #include "block.h"
+#include "brick.h"
 
 bool Generator_Block::Update(Scene &scene, float dt) {
-  // Accumulate time
-  time += dt;
 
-  // Add object to scene when time reaches certain level
-  if (time > 2 && previouslySpawned == NULL) {
-    auto obj = BlockPtr(new Block());
-    previouslySpawned = obj;
-    obj->position = this->position;
-    obj->position.x += 0;
-    scene.objects.push_back(obj);
-    time = 0;
+  float offset = 0.0f;
+  // Spawn 5 brick
+  while(spawnedBricks < 5) {
+    auto brick = BrickPtr(new Brick());
+    brick->position = this->position;
+    brick->position.y += offset;
+    scene.objects.push_back(brick);
+    spawnedBricks++;
+    offset += 1.1f;
   }
-
   return true;
 }
 
@@ -27,4 +26,5 @@ Generator_Block::~Generator_Block() {
 
 Generator_Block::Generator_Block() {
   time = 0;
+  spawnedBricks = 0;
 }
